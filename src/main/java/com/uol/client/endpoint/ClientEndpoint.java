@@ -3,7 +3,9 @@ package com.uol.client.endpoint;
 
 import com.uol.client.model.Client;
 import com.uol.client.repository.ClientRepository;
+import com.uol.client.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +15,15 @@ import java.util.List;
 @RequestMapping("/client")
 public class ClientEndpoint {
 
-    @Autowired
     private ClientRepository clientRepository;
+
+    private ClientService clientService;
+
+    @Autowired
+    public ClientEndpoint(ClientService clientService, ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+        this.clientService = clientService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Client>> findAllClients() {
@@ -24,7 +33,7 @@ public class ClientEndpoint {
 
     @GetMapping("/{idClient}")
     public ResponseEntity<Client> findClientById(@PathVariable Long idClient) {
-        Client client = clientRepository.getOne(idClient);
+        Client client = clientService.findById(idClient);
         return ResponseEntity.ok(client);
     }
 
@@ -37,6 +46,13 @@ public class ClientEndpoint {
     @PutMapping("/{idClient}")
     public ResponseEntity<Client> updateClient(@PathVariable Long idClient,
                                                @RequestBody Client client) {
-        return null;
+        Client updatedClient = clientService.updateClient(idClient, client);
+        return ResponseEntity.ok(updatedClient);
+    }
+
+    @PostMapping
+    public ResponseEntity<Client> registerClient(@RequestBody Client client) {
+        Client savedClient = clientService.saveClient(client);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedClient);
     }
 }

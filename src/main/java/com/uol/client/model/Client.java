@@ -34,4 +34,5 @@ public class Client {
 
     @NotNull
     private String minTemperature;
+
 }
