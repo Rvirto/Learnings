@@ -39,7 +39,7 @@ public class ClientEndpoint {
 
     @DeleteMapping("/{idClient}")
     public ResponseEntity<?> deleteClient(@PathVariable Long idClient) {
-        clientRepository.deleteById(idClient);
+        clientService.deleteClient(idClient);
         return ResponseEntity.noContent().build();
     }
 
